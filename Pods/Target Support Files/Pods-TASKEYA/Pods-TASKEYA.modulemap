@@ -1,0 +1,6 @@
+framework module Pods_TASKEYA {
+  umbrella header "Pods-TASKEYA-umbrella.h"
+
+  export *
+  module * { export * }
+}
