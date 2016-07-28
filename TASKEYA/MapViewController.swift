@@ -208,28 +208,51 @@ class MapViewController: UIViewController, UISearchBarDelegate, MKMapViewDelegat
     
     @IBAction func doneButtonTapped(sender: UIBarButtonItem) {
         
-        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.placeAdress = mapTitle.title
-        appDelegate.placePoint = String(pointAnnotation.coordinate.latitude) + "," + String(pointAnnotation.coordinate.longitude)
+        //        let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        //
+        //        // 位置情報の初期化
+        //        if let placeAdress = ud.objectForKey("placeAdress") as! String {
+        //            ud.removeObjectForKey("placeAdress")
+        //            print("キーplaceAdressを削除")
+        //        } else {
+        //            print("ud.objectForKey(\"placeAdress\") as! String がありませんでした。")
+        //        }
+        //        if let placeAdress = ud.objectForKey("placePoint") as! String {
+        //            ud.removeObjectForKey("placePoint")
+        //            print("キーplacePointを削除")
+        //        } else {
+        //            print("ud.objectForKey(\"placePoint\") as! String がありませんでした。")
+        //        }
+        
+        
+        //        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let ud = NSUserDefaults.standardUserDefaults()
+        
+//        appDelegate.placeAdress = mapTitle.title
+        // キーidに「taro」という値を格納。(idは任意の文字列でok)
+        ud.setObject(mapTitle.title, forKey: "placeAdress")
+        let str = String(pointAnnotation.coordinate.latitude) + "," + String(pointAnnotation.coordinate.longitude)
+        ud.setObject(str, forKey: "placePoint")
+//        appDelegate.placePoint = String(pointAnnotation.coordinate.latitude) + "," + String(pointAnnotation.coordinate.longitude)
         
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-//    override func viewWillDisappear(animated: Bool) {
-//        super.viewDidDisappear(animated)
-//        
-//    }
+    //    override func viewWillDisappear(animated: Bool) {
+    //        super.viewDidDisappear(animated)
+    //
+    //    }
     
     
-//    // Segue 準備
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-//        let backVC: NewPostInputViewController = (segue.destinationViewController as? NewPostInputViewController)!
-//        // SubViewController のselectedImgに選択された画像を設定する
-//        //            nextVC.userImage = userImage
-//        backVC.placeInfoString = String(pointAnnotation.coordinate.latitude) + "," + String(pointAnnotation.coordinate.longitude)
-//        backVC.mapButtonLabel = navigationItem.title!
-//        
-//    }
+    //    // Segue 準備
+    //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    //        let backVC: NewPostInputViewController = (segue.destinationViewController as? NewPostInputViewController)!
+    //        // SubViewController のselectedImgに選択された画像を設定する
+    //        //            nextVC.userImage = userImage
+    //        backVC.placeInfoString = String(pointAnnotation.coordinate.latitude) + "," + String(pointAnnotation.coordinate.longitude)
+    //        backVC.mapButtonLabel = navigationItem.title!
+    //
+    //    }
     
     
     /*

@@ -34,7 +34,8 @@ class LoginViewController: UIViewController {
     
     // メアドとパスでログインしたらユーザー情報を取得
     func getUserData(mail: String, pass: String) {
-        let requestUrl = "https://taskeya.com/final/user/sample.php?um=" + mail + "&pw=" + pass
+        let requestUrl = "https://kiyo:kiyokiyo@taskeya.com/mobile/?code=kiyocixo113aks331mxhr76567ejxaaa&func=signin&um=" + mail + "&up=" + pass
+        print(requestUrl)
         
         Alamofire.request(.GET, requestUrl).responseJSON
             {response in
@@ -44,17 +45,8 @@ class LoginViewController: UIViewController {
                 }
                 let json = JSON(object)
                 print(json)
-                let id: String? = json["TSK_ID"].string
-
-                let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-                appDelegate.app_TSK_ID = id
-                
-                if appDelegate.app_TSK_ID == nil {
-                    print("ログイン失敗")
-                    self.passwordTextField.placeholder = "パスワードが違います"
-                } else {
-                    print("ログイン成功、プロフィールに画面遷移する")
-                    // NSDBに保存
+                if let id = json["TSK_ID"].string {
+                    print("ログイン成功、tsk_idをDBに格納してプロフィールに画面遷移する")
                     let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
                     defaults.setValue(id, forKey: "tsk_id")
                     defaults.synchronize()
@@ -63,7 +55,12 @@ class LoginViewController: UIViewController {
                     var viewController: UITabBarController //UIViewController!
                     viewController = storyboard.instantiateViewControllerWithIdentifier("TabBarVC") as! UITabBarController
                     self.presentViewController(viewController, animated: true, completion: nil)
+                } else {
+                    print("ログイン失敗")
+                    self.passwordTextField.placeholder = "パスワードが違います"
+                    
                 }
+
                 
         }
         

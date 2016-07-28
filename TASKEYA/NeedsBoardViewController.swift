@@ -11,13 +11,17 @@ import Alamofire
 import SwiftyJSON
 
 class NeedsBoardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+    
     @IBOutlet weak var table: UITableView!
     
     var userImage: UIImage?
     var selectedPost: Post?
     
     var postArray: [Post] = []
+    var works: [[String: String?]] = []
+    
+    
+    var workArray :[Work?] = []
     
     // 写真の読み込み
     let imgArray: [String] = [
@@ -40,90 +44,93 @@ class NeedsBoardViewController: UIViewController, UITableViewDataSource, UITable
         "2013/8/23 17:21",
         "2013/8/23 17:33"
     ]
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         
+        //        tableView.estimatedRowHeight = 50.0
+        //        table.estimatedRowHeight = 90.0
+        //        table.rowHeight = UITableViewAutomaticDimension
         table.dataSource = self
         table.delegate = self
         
-        inputArray()
-
+        
     }
     
     override func viewDidAppear(animated: Bool) {
         print("viewDidAppear")
         
-        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let id = appDelegate.app_TSK_ID
+//        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//        var id = appDelegate.app_TSK_ID
         
-        print(id)
         
-        if id != nil {
-            getUserData()
-        }
-
-    }
-    
-    // 仕事を30件取得
-    func getUserData() {
+        
+//        print(id)
+        
         
         print("仕事を30件取得開始")
         
-        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let id = appDelegate.app_TSK_ID
+        //        let requestUrl = "http://api.taskeya.com/mobile?uid='" + id! + "'&am='30'"
         
-        let requestUrl = "http://api.taskeya.com/mobile?uid='" + id! + "'&am='30'"
+        //        "TSK_ID" : "3804b198117a1347dd4d6aa9c86ec38816644dec"
         
-        Alamofire.request(.GET, requestUrl).responseJSON
-            {response in
-                
-                guard let object = response.result.value else {
-                    return
-                }
-                let json = JSON(object)
-                print(json)
-//                json.forEach { (_, json) in
-//                    let article: [String: String?] = [
-//                        "title": json["title"].string,
-//                        "userId": json["user"]["id"].string,
-//                        "dateString": json["updated_at"].string,
-//                        "imageString": json["user"]["profile_image_url"].string,
-//                        "webUrl": json["url"].string
-//                    ] // 1つの記事を表す辞書型を作る
-//                    self.articles.append(article) // 配列に入れる
-//                    print(article)
-//                }
-                
-        }
+        //        let count = 6
         
-        print("取得完了")
+        
+        // 「ud」というインスタンスをつくる。
+        let ud = NSUserDefaults.standardUserDefaults()
+        // キーがidの値をとります。
+        var id = ud.objectForKey("tsk_id") as! String
+        
+//        id = "3804b198117a1347dd4d6aa9c86ec38816644dec"
+        
+        getWorkList(id)
+        
+        //        for item in array {
+        //            print(item!.w_Title)
+        //            print(item!.w_RequesterName)
+        //            print(item!.w_createdAt)
+        //        }
+        
+        //        if id != nil {
+        //            getUserData()
+        //        } else {
+        //            print("error: no id.")
+        //            table.reloadData()
+        //        }
+        
+        
         
     }
     
-    func inputArray() {
-        for i in 0 ..< imgArray.count{
-            let date_formatter: NSDateFormatter = NSDateFormatter()
-            date_formatter.dateFormat = "yyyy/MM/dd HH:mm"
-            let changedDate: NSDate = date_formatter.dateFromString(label2Array[i])!
-            
-            let post = Post(userName: "name:No.\(i + 1)",
-                            userImage: UIImage(named: imgArray[i])!,
-                            titleString: "Title:\(String(imgArray[i]))",
-                            lastTime: changedDate
+    
+    func inputArray(array: [Work?]) {
+        postArray = []
+        
+        for work in workArray{
+            let post = Post(workID: work!.w_Work_ID,
+                userName: work!.w_RequesterName,
+                userImage: work!.w_ProfileURL!,
+                titleString: work!.w_Title,
+                lastTime: work!.w_createdAt
             )
             postArray.append(post)
         }
+        
+        print("postArray")
+        print(postArray)
+        table.reloadData()
     }
-    
     
     //Table Viewのセルの数を指定
     func tableView(table: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return imgArray.count
+        print(workArray.count)
+        return workArray.count
     }
+    
     
     //各セルの要素を設定する
     func tableView(table: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -138,8 +145,8 @@ class NeedsBoardViewController: UIViewController, UITableViewDataSource, UITable
         // Tag番号 ２ で UILabel インスタンスの生成
         let label1 = table.viewWithTag(2) as! UILabel
         label1.text = postArray[indexPath.row].userName as String
-//        let color = ColorManager() //インスタンス化
-//        label1.backgroundColor = color.mainColor()
+        //        let color = ColorManager() //インスタンス化
+        //        label1.backgroundColor = color.mainColor()
         
         // Tag番号 ３ で UILabel インスタンスの生成
         let label2 = table.viewWithTag(3) as! UILabel
@@ -162,15 +169,73 @@ class NeedsBoardViewController: UIViewController, UITableViewDataSource, UITable
         }
         
     }
+    // 仕事を30件取得 -> 6件
+    func getWorkList(id: String) {
+        
+        //        var isYet: Bool = true
+        
+        print("仕事を30件取得開始")
+        
+        //        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        //        var id = appDelegate.app_TSK_ID
+        //
+        //        //        let requestUrl = "http://api.taskeya.com/mobile?uid='" + id! + "'&am='30'"
+        //
+        //        //        "TSK_ID" : "3804b198117a1347dd4d6aa9c86ec38816644dec"
+        //
+        let count = 6
+        //
+        //        id = "3804b198117a1347dd4d6aa9c86ec38816644dec"
+        
+        //        let requestUrl = "https://kiyo:kiyokiyo@taskeya.com/mobile/?code=kiyocixo113aks331mxhr76567ejxaaa&func=getjobs&uid=" + id + "&srt=createdAt&cnt=" + String(count)
+        
+        let requestUrl = "https://kiyo:kiyokiyo@taskeya.com/mobile/?code=kiyocixo113aks331mxhr76567ejxaaa&func=getjobs&uid="
+            + id + "&srt=createdAt&cnt=" + String(6) // + "&sp=" + String("既に読み込んだ数: Int")
+        
+        
+        Alamofire.request(.GET, requestUrl).responseJSON
+            {response in
+                
+                guard let object = response.result.value else {
+                    return
+                }
+                let json = JSON(object)
+                print(json)
+                
+                self.workArray = []
+                for i in 0 ..< json.count {
+                    if i == 0 {
+                        self.workArray.append(Work(json: json[0][0]))
+                    } else {
+                        self.workArray.append(Work(json: json[i][String(i)]))
+                    }
+                    
+                    print(self.workArray.last)
+                }
+                
+                print("1")
+                //                isYet = false
+                print(self.workArray)
+                
+                print("取得完了")
+                
+                
+                
+                self.inputArray(self.workArray)
+        }
+        
+        
+    }
+    
     
     // Segue 準備
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "toFriendsNeedVC" {
             let nextVC: FriendsNeedViewController = (segue.destinationViewController as? FriendsNeedViewController)!
             // SubViewController のselectedImgに選択された画像を設定する
-//            nextVC.userImage = userImage
+            //            nextVC.userImage = userImage
             nextVC.post = selectedPost
         }
     }
-
+    
 }

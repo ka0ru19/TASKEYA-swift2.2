@@ -27,6 +27,11 @@ class MyPageViewController: UIViewController {
         
     }
     
+    @IBAction func onLogoutButtonTapped(sender: UIButton) {
+        // キーtsk_idの値を削除
+//        ud.removeObjectForKey("tsk_id")
+    }
+    
     // Segue 準備
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if segue.identifier == "toLoginVC" {

@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import Alamofire
+import SwiftyJSON
 
 class FriendsNeedViewController: UIViewController {
     
     var post: Post!
+    var work: Work!
     
     var postImage: UIImage?
     var userImage: UIImage!
@@ -21,6 +24,7 @@ class FriendsNeedViewController: UIViewController {
     @IBOutlet weak var postImageView: UIImageView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var postTextView: UITextView!
     @IBOutlet weak var placeLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
@@ -30,15 +34,19 @@ class FriendsNeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        work = Work(workId: post.workID)
+        
+        print(work)
         // Do any additional setup after loading the view.
         
         postImageView.image = nil
-        userImageView.image = post.userImage
-        userNameLabel.text = post.userName
-        postTextView.text = String(post.userImage)
-        placeLabel.text = "ppp^place"
-        timeLabel.text = "ttt^time"
-        tanksLabel.text = "thanks^thanks"
+        userImageView.image = work.w_ProfileURL //post.userImage
+        userNameLabel.text = work.w_RequesterName //post.userName
+        titleLabel.text = work.w_Title
+        postTextView.text = work.w_Detail
+        placeLabel.text = String(work.w_Location) //"ppp^place"
+        timeLabel.text = String(work.w_C_Deadline) //"ttt^time"
+        tanksLabel.text = String(work.w_Price) //"thanks^thanks"
         
     }
 
@@ -47,6 +55,8 @@ class FriendsNeedViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func onApplyButtonTapped(sender: UIButton) {
+    }
 
     /*
     // MARK: - Navigation

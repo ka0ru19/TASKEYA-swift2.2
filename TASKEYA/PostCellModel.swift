@@ -21,6 +21,7 @@ import UIKit
 
 
 struct Post {
+    let workID: String
     let userName: String
     let userImage: UIImage
     let titleString: String

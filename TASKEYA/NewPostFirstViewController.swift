@@ -11,8 +11,15 @@ import Alamofire
 
 class NewPostFirstViewController: UIViewController {
     
-    var tagNumber1: Int!
-    var price:String!
+    //    var tagNumber1: Int!
+    
+    @IBOutlet weak var button1: UIButton!
+    @IBOutlet weak var button2: UIButton!
+    @IBOutlet weak var button3: UIButton!
+    @IBOutlet weak var button4: UIButton!
+    
+    let cat1Array = ["知恵求む","助け求む","仲間求む","応援求む"]
+    var pushedRow: Int!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,37 +28,19 @@ class NewPostFirstViewController: UIViewController {
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
         
+        button1.tag = 1
+        button2.tag = 2
+        button3.tag = 3
+        button4.tag = 4
         
-    }
-    
-    func writeToDatabase() {
+        button1.setTitle(cat1Array[0], forState: .Normal)
+        button2.setTitle(cat1Array[1], forState: .Normal)
+        button3.setTitle(cat1Array[2], forState: .Normal)
+        button4.setTitle(cat1Array[3], forState: .Normal)
         
-        let URL = NSURL(string: "https://taskeya.com/final/user/sample2.php")
-        let jsonData :NSData = NSData(contentsOfURL: URL!)!
-        do {
-            let json = try NSJSONSerialization.JSONObjectWithData(jsonData, options: .MutableLeaves) as? NSDictionary
-            
-            // エラーが起こらなければ後続の処理...
-            price = json!["LastName"] as! String
-            print(price)
-            
-        } catch  {
-            // エラーが起こったらここに来るのでエラー処理などをする
-            print("error")
-        }
+        button1.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button3.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         
-    }
-    
-    // メアドとパスでログインしたらユーザー情報を取得
-    func getUserData(mail: String, pass: String) {
-        let requestUrl = "https://taskeya.com/final/user/sample.php?um=" + mail + "&pw=" + pass
-        
-        Alamofire.request(.GET, requestUrl).responseJSON
-            {response in
-                let json = response.result.value
-                print(json)
-                
-        }
         
     }
     
@@ -62,34 +51,31 @@ class NewPostFirstViewController: UIViewController {
     }
     
     @IBAction func btn1Tapped(sender: UIButton) {
-        tagNumber1 = 1
-        performSegueWithIdentifier("toNewPostSecondVC",sender: nil)
+        performSegueWithIdentifier("toNewPostSecondVC",sender: sender)
     }
     
     @IBAction func btn2Tapped(sender: UIButton) {
-        tagNumber1 = 2
-        performSegueWithIdentifier("toNewPostSecondVC",sender: nil)
+        performSegueWithIdentifier("toNewPostSecondVC",sender: sender)
     }
     
     @IBAction func btn3Tapped(sender: UIButton) {
-        tagNumber1 = 3
-        performSegueWithIdentifier("toNewPostSecondVC",sender: nil)
+        performSegueWithIdentifier("toNewPostSecondVC",sender: sender)
     }
     
     @IBAction func btn4Tapped(sender: UIButton) {
-        tagNumber1 = 4
-        performSegueWithIdentifier("toNewPostSecondVC",sender: nil)
+        performSegueWithIdentifier("toNewPostSecondVC",sender: sender)
     }
     
     
     // Segue 準備
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+                print(sender!.tag)
         if segue.identifier == "toNewPostSecondVC" {
             let nextVC: NewPostSecondViewController = (segue.destinationViewController as? NewPostSecondViewController)!
-            // SubViewController のselectedImgに選択された画像を設定する
-            //            nextVC.userImage = userImage
-            nextVC.displayID = tagNumber1
+//            nextVC.titleLabel.text = cat1Array[sender!.tag - 1]
+            nextVC.displayID = sender!.tag - 1 // 1~4 -> 0~3
         }
+
     }
     
     /*
