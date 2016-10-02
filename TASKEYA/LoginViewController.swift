@@ -44,16 +44,17 @@ class LoginViewController: UIViewController {
                     return
                 }
                 let json = JSON(object)
-                print(json)
+                print(json) //ここまで
+                
                 if let id = json["TSK_ID"].string {
                     print("ログイン成功、tsk_idをDBに格納してプロフィールに画面遷移する")
                     let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
                     defaults.setValue(id, forKey: "tsk_id")
                     defaults.synchronize()
                     // 画面遷移
-                    let storyboard:UIStoryboard =  UIStoryboard(name: "Main",bundle:nil)
+//                    let storyboard:UIStoryboard =  UIStoryboard(name: "Main",bundle:nil)
                     var viewController: UITabBarController //UIViewController!
-                    viewController = storyboard.instantiateViewControllerWithIdentifier("TabBarVC") as! UITabBarController
+                    viewController = self.storyboard!.instantiateViewControllerWithIdentifier("TabBarVC") as! UITabBarController
                     self.presentViewController(viewController, animated: true, completion: nil)
                 } else {
                     print("ログイン失敗")

@@ -82,21 +82,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var token = "token=\(deviceTokenString)&id=\(myID)"
         print(token)
         
-        request.HTTPBody = token.dataUsingEncoding(NSUTF8StringEncoding)
-        
-        var response: NSURLResponse?
-        
-        do {
-            let resultData = try NSURLConnection.sendSynchronousRequest(request, returningResponse: &response)
-            
-            var myData = NSString(data: resultData, encoding: NSUTF8StringEncoding)!
-            
-            print(myData)
-            
-        } catch (let e) {
-            print(e)
-            
-        }
+        // tokenをサーバーに送信
+//        
+//        request.HTTPBody = token.dataUsingEncoding(NSUTF8StringEncoding)
+//        
+//        var response: NSURLResponse?
+//        
+//        do {
+//            let resultData = try NSURLConnection.sendSynchronousRequest(request, returningResponse: &response)
+//            
+//            var myData = NSString(data: resultData, encoding: NSUTF8StringEncoding)!
+//            
+//            print(myData)
+//            
+//        } catch let error {
+//            print(error)
+//            
+//        }
     }
     
     // Push通知受信時とPush通知をタッチして起動したときに呼ばれる
